@@ -24,6 +24,11 @@ public class UserServiceImpl implements UserServices{
 
     @Override
     public User checkCredentials(User user){
-        return user;
+        var existingUser = userRepo.findByUsernameAndPassword(user.getUsername(),user.getPassword());
+        
+        if(existingUser.isPresent()){
+            return existingUser.get();
+        }
+        return null;
     }
 }

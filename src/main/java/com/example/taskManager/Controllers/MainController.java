@@ -1,21 +1,24 @@
 package com.example.taskManager.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
-import com.example.taskManager.Repositories.UserRepository;
 import com.example.taskManager.Services.UserServiceImpl;
-import java.util.List;
 import com.example.taskManager.Entities.User;
+import com.example.taskManager.Jwt.JwtUtil;
 
-import jakarta.annotation.*;
 
 @RestController
 public class MainController {
     
     private UserServiceImpl service;
+
+    @Autowired
+    private JwtUtil jwtUtility;
 
     @Autowired
     public MainController(UserServiceImpl service){
@@ -33,7 +36,15 @@ public class MainController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody User user){
-        return "helo";
+    public ResponseEntity<String> login(@RequestBody User user){
+
+        User returnedUser = service.checkCredentials(user);
+
+        if(returnedUser == null){
+            return new ResponseEntity<>("Invalid Username or Password",HttpStatus.UNAUTHORIZED);
+        }
+        String token = jwtUtility.generateToken(user.getUsername());
+
+        return new ResponseEntity<>(token,HttpStatus.OK);
     }
 }
