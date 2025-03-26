@@ -149,7 +149,7 @@ async function loginUser(){
     if(response.ok){
         const token = await response.text();
         localStorage.setItem("authToken",token);
-        window.location.href="/dashboard";
+        window.location.href="/dashboard.html";
     }else if(response.status == 401){
         errorText.innerText = "Invalid Username or Password";
     }else{
