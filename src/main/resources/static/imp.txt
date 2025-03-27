@@ -1,0 +1,51 @@
+<div class="glass card" data-task-id="${task.id}">
+
+                <div class="cardOption">
+                    <button class="btn-unicode" data-action="delete">ⓧ</button>
+                    <button class="btn-unicode" data-action="edit">🖉</button>
+                </div>
+
+                <div class="cardDetail">
+                    <span class="t-center">
+                        <p class="text-s-grey">Priority</p>
+                        <p class="item-pill"><b data-info="priority">${task.priority}</b></p>
+                    </span>
+
+                    <span class="t-center">
+                        <p class="text-s-grey">Status</p>
+                        <select class="sel-pill" data-action="updateStatus" data-info="status">
+                            <option>TODO</option>
+                            <option>RUNNING</option>
+                            <option>BLOCKER</option>
+                            <option>DONE</option>
+                        </select>
+                    </span>
+
+                    <span class="t-center">
+                        <p class="text-s-grey">Due Date</p>
+                        <p class="item-pill" data-info="dueDate">${task.dueDate}</p>
+                    </span>
+
+                </div>
+
+                <div class="titleContainer">
+                    <p class="taskTitleText" data-info="title">
+                        ${task.name}
+                    </p>
+                </div>
+                <div class="descriptionContainer">
+                    <p class="taskDescriptionText" data-info="description">
+                        ${task.description}
+                    </p>
+                </div>
+
+                <div class="overlay hide">
+                    <p class="text-m-purple">Delete this task?</p>
+                    <div style="display: flex;flex-direction: row;">
+                        <button class="confirmBtn" data-action="confirmDelete">YES</button>
+                        <button class="confirmBtn" data-action="cancelDelete">NO</button>
+                    </div>
+                    
+                </div>
+                
+            </div>
