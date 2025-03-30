@@ -1,5 +1,5 @@
 
-let popupHeadingText, createButton, popupWindow, popupCancel, saveTaskButton, taskContainer,updateBtn;
+let popupHeadingText, popupWindow, popupCancel, saveTaskButton, taskContainer,updateBtn, filterStatus, filterPriority;
 let newTitle, newDescription, newPriority, newStatus, newDueDate;
 let authToken;
 
@@ -11,7 +11,6 @@ function start(){
 function init(){
     popupWindow = document.querySelector(".popup");
     popupHeadingText = document.getElementById("popupHeadingText");
-    createButton = document.getElementById("createButton");
     popupCancel = document.getElementById("popupCancel");
     saveTaskButton = document.getElementById("saveTaskButton");
     newTitle = document.getElementById("newTitle");
@@ -21,13 +20,84 @@ function init(){
     newDueDate = document.getElementById("newDueDate");
     taskContainer = document.getElementById("taskContainer");
     updateBtn = document.getElementById("updateButton");
+    filterPriority = document.getElementById("filterPriority");
+    filterStatus = document.getElementById("filterStatus");
 
     authToken = localStorage.getItem("authToken");
 
-    createButton.addEventListener('click',createNewTask);
     popupCancel.addEventListener('click',closePopup);
     saveTaskButton.addEventListener('click',saveTask);
     updateBtn.addEventListener('click',updateTask);
+
+    document.getElementById("taskContainer").addEventListener('click',(event)=>{
+     
+        const card = event.target.closest("[data-task-id]"); // Find the card
+    
+        if (!card) return; // If no card found, exit
+    
+        const action = event.target.dataset.action;
+       
+        if(action == "delete"){
+            card.lastElementChild.classList.remove("hide");
+    
+        }else if(action == "cancelDelete"){
+            card.lastElementChild.classList.add("hide");
+        }else if(action == "confirmDelete"){
+            card.lastElementChild.classList.add("hide");
+            deleteTask(card);
+        }else if(action == "edit"){
+            
+            const title = card.querySelector("p[data-info='title']").innerText;
+            const description = card.querySelector("p[data-info='description']").innerText;
+            const priority = card.querySelector("b[data-info='priority']").innerText;
+            const dueDate = stringToTime(card.querySelector("p[data-info='dueDate']").innerText);
+            const status = card.querySelector("select[data-info='status']").value;
+    
+            showPopup("Edit Task", true, title, description, priority, status, dueDate, card.getAttribute("data-task-id"));
+    
+           
+            
+        }
+    });
+    
+    document.getElementById("taskContainer").addEventListener('change',(event)=>{
+        if(event.target.dataset.action == "updateStatus"){
+    
+            const card = event.target.closest("[data-task-id]");
+            const taskId = card.getAttribute("data-task-id");
+            const newStatus = event.target.value;
+    
+            updateStatus(taskId, newStatus, event.target);
+        }
+    });
+    
+    document.getElementById("taskContainer").addEventListener("mousedown", (event) => {
+        if (event.target.dataset.action === "updateStatus") {
+            event.target.dataset.oldValue = event.target.value;
+        }
+    });
+    
+    document.getElementById("options").addEventListener('change',(event)=>{
+    
+       
+    
+        const priority = filterPriority.value;
+        const status = filterStatus.value;
+    
+        const action = event.target.dataset.action;
+        if(action == "priority" || action == "status"){
+            getTasksByFilter(status, priority);
+        }
+    });
+    
+    document.getElementById("options").addEventListener('click',(event)=>{
+        const action = event.target.dataset.action;
+       
+        if(action == "createTask"){
+            showPopup("Create New Task", false);
+        }
+    });
+
 }
 
 async function fetchTasks(){
@@ -46,8 +116,6 @@ async function fetchTasks(){
         const tasks = await response.json();
 
         tasks.forEach(task=>{
-            //Printing each task
-            console.log(task);
             taskCard = taskToCard(task);
 
         taskContainer.innerHTML += taskCard;
@@ -55,9 +123,6 @@ async function fetchTasks(){
     }
 }
 
-function createNewTask(){
-    showPopup("Create New Task", false);
-}
 
 function showPopup(popupTitle, hasValues, title, description, priority, status, dueDate, id){
 
@@ -113,7 +178,7 @@ function saveTask(){
         },
         body:JSON.stringify({name:newTitle.value, description:newDescription.value, priority:newPriority.value, status:newStatus.value, dueDate:formatTime(newDueDate.value)})
     }).then(response=>{
-        console.log(response);
+       
         if(response.ok){
             fetchTasks();
         }else if(response.status == 401){
@@ -148,7 +213,8 @@ function deleteTask(card){
 }
 
 function taskToCard(task){
-    return `<div class="glass card" data-task-id="${task.id}">
+   
+    return `<div class="glass card">
 
             <div class="cardOption">
                 <button class="btn-unicode" data-action="delete">ⓧ</button>
@@ -175,7 +241,7 @@ function taskToCard(task){
                                     ret += `<option value="${element}">${element}</option>`;
                                 }
                             })
-                            console.log(ret);
+                            
                             return ret;
                             })()
 
@@ -236,7 +302,7 @@ function updateTask(event){
         },
         body:JSON.stringify({id:taskId,name:newTitle.value, description:newDescription.value, priority:newPriority.value, status:newStatus.value, dueDate:formatTime(newDueDate.value)})
     }).then(response=>{
-        console.log(response);
+  
         if(response.ok){
             fetchTasks();
         }else{
@@ -266,52 +332,27 @@ function updateStatus(taskId, status, element){
     });
 }
 
+async function  getTasksByFilter(status, priority){
+    let response = await fetch(`http://localhost:8081/get-tasks/${priority}/${status}`,{
+        method:"GET",
+        headers:{
+            "Authorization":`Bearer ${localStorage.getItem("authToken")}`
+        }
+    });
+
+    if(response.ok){
+
+        taskContainer.innerHTML = "";
+
+        const tasks = await response.json();
+
+        tasks.forEach(task=>{
+            taskCard = taskToCard(task);
+
+        taskContainer.innerHTML += taskCard;
+        });
+    }
+}
+
 start();
 
-document.getElementById("taskContainer").addEventListener('click',(event)=>{
-    console.log(event.target);
-    const card = event.target.closest("[data-task-id]"); // Find the card
-
-    if (!card) return; // If no card found, exit
-
-    const action = event.target.dataset.action;
-    console.log("action = ",action);
-    if(action == "delete"){
-        card.lastElementChild.classList.remove("hide");
-
-    }else if(action == "cancelDelete"){
-        card.lastElementChild.classList.add("hide");
-    }else if(action == "confirmDelete"){
-        card.lastElementChild.classList.add("hide");
-        deleteTask(card);
-    }else if(action == "edit"){
-        
-        const title = card.querySelector("p[data-info='title']").innerText;
-        const description = card.querySelector("p[data-info='description']").innerText;
-        const priority = card.querySelector("b[data-info='priority']").innerText;
-        const dueDate = stringToTime(card.querySelector("p[data-info='dueDate']").innerText);
-        const status = card.querySelector("select[data-info='status']").value;
-
-        showPopup("Edit Task", true, title, description, priority, status, dueDate, card.getAttribute("data-task-id"));
-
-        console.log(title,description,priority,dueDate,status);
-        
-    }
-});
-
-document.getElementById("taskContainer").addEventListener('change',(event)=>{
-    if(event.target.dataset.action == "updateStatus"){
-
-        const card = event.target.closest("[data-task-id]");
-        const taskId = card.getAttribute("data-task-id");
-        const newStatus = event.target.value;
-
-        updateStatus(taskId, newStatus, event.target);
-    }
-});
-
-document.getElementById("taskContainer").addEventListener("mousedown", (event) => {
-    if (event.target.dataset.action === "updateStatus") {
-        event.target.dataset.oldValue = event.target.value;
-    }
-});

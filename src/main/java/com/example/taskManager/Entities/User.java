@@ -6,6 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+
 
 @Entity
 @Table(name = "users")
@@ -16,15 +18,19 @@ public class User {
     private long id;
 
     @Column(nullable = false)
+    @NotBlank(message = "Name cannot be blank")
     private String name;
 
     @Column(nullable = false, unique = true)
+    @NotBlank(message = "Username cannot be blank")
     private String username;
 
     @Column(nullable = false)
+    @NotBlank(message = "Password cannot be blank")
     private String password;
 
     @Column(nullable = false)
+    @NotBlank(message = "E-mail cannot be blank")
     private String email;
 
     public User(){

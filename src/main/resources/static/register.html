@@ -4,100 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign up | TODO Cloud</title>
+    <link rel="stylesheet" href="/index.css">
 </head>
-
-<style>
-
-    *{
-        margin:0px;
-        padding:0px;
-    }
-
-    .bg-grad{
-        background-image: linear-gradient(45deg,white, #7634e77d);
-        width: 100vw;
-        height: 100vh;
-    }
-
-    .text-m-purple{
-        color:#7634e7;
-        font-family: sans-serif;
-        font-size: 30px;
-    }
-
-    .glass{
-        background: rgba(255, 255, 255, 0.62);
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(4.9px);
-        -webkit-backdrop-filter: blur(4.9px);
-    }
-
-    .mainContainer{
-        width: 100vw;
-        height: 100vh;
-    }
-
-    .loginBox{
-        margin: auto;
-        margin-top: 10%;
-        display: flex;
-        flex-direction: column;
-        padding: 1rem;
-        max-width: 550px;
-        border-radius: 7px;
-        font-family: sans-serif;
-    }
-
-    .inputField{
-        background-color: transparent;
-        font-size: 1.2rem;
-        padding: 0.5rem;
-        border-radius: 4px;
-        border:none;
-        border-bottom: 1px solid #7634e7;
-        color:#7634e7;
-    }
-    .inputField:focus{
-        outline: none;
-    }
-
-    .m-1{
-        margin:8px;
-    }
-
-    .btn-primary{
-        font-family: sans-serif;
-        font-size: 1.2rem;
-        padding:0.5rem;
-        color:black;
-        background-color: transparent;
-        border:1px solid rgba(128, 0, 128, 0.5);
-        border-radius: 7px;
-        box-shadow: 0px 0px 3px #7634e77d;
-        cursor: pointer;
-        transition:0.5s;
-    }
-
-    .btn-primary:hover{
-        background-color: #7634e77d;
-        color:white;
-    }
-
-    .text-s-purple{
-        font-size: 1rem;
-        font-family: sans-serif;
-        color: #7634e7;
-    }
-
-    .m-a{
-        margin:auto;
-    }
-
-    .text-m-crimson{
-        color:crimson;
-    }
- 
-</style>
 
 <body>
 
@@ -121,7 +29,7 @@
                 <input id="password" class="inputField m-1" type="password" placeholder="Password">
                 <input id="confirm-password" class="inputField m-1" type="password" placeholder="Confirm Password">
                 
-                <button id="loginBtn" class="btn-primary m-1">SIGN UP</button>
+                <button id="registerBtn" class="btn-primary m-1">SIGN UP</button>
                 <p class="text-s-purple m-a">already have an account <a href="/">login </a>instead</p>
             </div>
 
@@ -129,49 +37,7 @@
     </div>
 
     
-<script>
-
-let loginButton, errorText;
-
-function start(){
-    loginButton = document.getElementById("loginBtn");
-    errorText = document.getElementById("errorText");
-    loginButton.addEventListener('click',signupUser);
-}
-
-async function signupUser(){
-
-    errorText.innerText = "";
-
-    const username = document.getElementById("username").value;
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const confirmPassword = document.getElementById("confirm-password").value;
-
-    if(!(password === confirmPassword)){
-        errorText.innerText = "Passwords do not match";
-        return;
-    }
-
-    let response = await fetch("/register",{
-        method:"POST",
-        headers:{
-            "Content-Type":"application/json"
-        },
-        body:JSON.stringify({name:name,username:username,password:password,email:email})
-    });
-
-    if(response.ok){
-        loginButton.innerText = "Successfully registered";
-    }else{
-        errorText.innerText = "Something went wrong";
-    }
-}
-
-start();
-
-</script>
+<script src="/register.js"></script>
 
 </body>
 
