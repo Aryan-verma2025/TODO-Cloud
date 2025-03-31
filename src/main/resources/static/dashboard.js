@@ -214,7 +214,7 @@ function deleteTask(card){
 
 function taskToCard(task){
    
-    return `<div class="glass card">
+    return `<div class="glass card" data-task-id="${task.id}">
 
             <div class="cardOption">
                 <button class="btn-unicode" data-action="delete">ⓧ</button>

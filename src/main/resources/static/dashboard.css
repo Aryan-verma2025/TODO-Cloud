@@ -280,4 +280,14 @@ nav{
         width: 80%;
 
     }
+    .dashboardContainer{
+        margin:1rem;
+    }
+
+    .taskContainer{
+        /* display: grid; */
+        grid-template-columns: 1fr; 
+        /* width: 100%; */
+        gap: 10px;
+    }
 }
