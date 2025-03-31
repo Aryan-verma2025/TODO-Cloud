@@ -304,7 +304,9 @@ function updateTask(event){
     }).then(response=>{
   
         if(response.ok){
-            fetchTasks();
+            const priority = filterPriority.value;
+            const status = filterStatus.value;
+            getTasksByFilter(status,priority);
         }else{
             console.error("error updating task"); 
         }

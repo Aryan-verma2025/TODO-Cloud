@@ -95,6 +95,7 @@ nav{
     grid-template-columns: 1fr 1fr; 
     width: 100%;
     gap: 10px;
+    padding-bottom: 2rem;
 }
 .text-s-grey{
     font-family: sans-serif;
@@ -128,7 +129,11 @@ nav{
     appearance: none;
     width: fit-content;
     text-align: center;
+    cursor: pointer;
     
+}
+.sel-pill:hover{
+    background-color: #7634e78d;
 }
 .sel-pill:focus{
     outline: none;
