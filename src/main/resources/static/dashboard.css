@@ -19,7 +19,6 @@ nav{
 }
 
 .dashboardContainer{
-    width: 100%;
     max-width: 1200px;
     height: 100vh;
     margin:auto;
@@ -60,10 +59,15 @@ nav{
     overflow-wrap: break-word;
     transition:0.5s;
     border:2px solid transparent;
+    margin:auto;
 }
 
 .card:hover{
     border:2px solid #7634e73b;
+}
+
+.card-expired{
+    border-left-color:crimson !important;
 }
 
 .cardOption{
@@ -280,7 +284,14 @@ nav{
     border-radius: 8px;
 }
 
-@media (max-width:800px){
+@media (max-width:1220px){
+    .options{
+        width: 80%;
+
+    }
+}
+
+@media (max-width:850px){
     .options{
         width: 80%;
 
@@ -290,9 +301,38 @@ nav{
     }
 
     .taskContainer{
-        /* display: grid; */
         grid-template-columns: 1fr; 
-        /* width: 100%; */
-        gap: 10px;
+    }
+    .popup{
+        width:80%;
+    }
+}
+
+@media (max-width:500px){
+    .options{
+        width: 90%;
+    }
+    .createBtn{
+        font-size: 1rem;
+    }
+    .item-pill{
+        padding:0px;
+        padding-left: 0.3rem;
+        padding-right: 0.3rem;
+        font-size: 1rem;
+    }
+    .sel-pill{
+        padding:0px;
+        padding-left: 0.3rem;
+        padding-right: 0.3rem;
+        font-size: 1rem;
+    }
+    
+}
+
+@media (max-width:370px){
+    .cardDetail{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
     }
 }

@@ -32,6 +32,8 @@ async function signupUser(){
 
     if(response.ok){
         registerBtn.innerText = "Successfully registered";
+    }else if(response.status == 409){
+        errorText.innerText = "Username is already registered";
     }else{
         errorText.innerText = "Something went wrong";
     }

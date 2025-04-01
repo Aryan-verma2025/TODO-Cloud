@@ -155,6 +155,7 @@ function closePopup(){
 }
 
 function formatTime(time){
+    //Converts js time to String DD-MM-YYYY HH:MM:SS
     let date = new Date(time);
 
     let day = String(date.getDate()).padStart(2, '0');
@@ -213,8 +214,11 @@ function deleteTask(card){
 }
 
 function taskToCard(task){
-   
-    return `<div class="glass card" data-task-id="${task.id}">
+
+    const dueDateTime = new Date(stringToTime(task.dueDate));
+    const currentDate = new Date();
+
+    return `<div class="glass card ${ (dueDateTime > currentDate)?"":"card-expired" } " data-task-id="${task.id}">
 
             <div class="cardOption">
                 <button class="btn-unicode" data-action="delete">ⓧ</button>
@@ -282,10 +286,10 @@ function taskToCard(task){
 
 function stringToTime(dateString) {
     
-    // Convert "28-03-2025 02:00:00" to "2025-03-28T02:00"
+    // Convert "DD-MM-YYYY HH:MM:SS" to "YYYY-MM-DDTHH:MM"
     let parts = dateString.split(" ");
-    let dateParts = parts[0].split("-"); // Split "28-03-2025"
-    let timeParts = parts[1].split(":"); // Split "02:00:00"
+    let dateParts = parts[0].split("-"); // Split "DD-MM-YYYY"
+    let timeParts = parts[1].split(":"); // Split "HH:MM:SS"
 
     return`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}T${timeParts[0]}:${timeParts[1]}`;
     
